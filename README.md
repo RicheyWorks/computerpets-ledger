@@ -2,15 +2,37 @@
 
 **Economy Ledger** — Transaction service balancing in-game currency against crypto assets.
 
-Part of the [ComputerPets](https://github.com/RicheyWorks/computerpets) ecosystem. Index: [computerpets-ecosystem](https://github.com/RicheyWorks/computerpets-ecosystem).
+Part of [ComputerPets](https://github.com/RicheyWorks/computerpets). Map: [computerpets-ecosystem](https://github.com/RicheyWorks/computerpets-ecosystem).
 
-> Status: **design scaffold**. This repository ships the contract, README, and layout so implementation can start without renaming the organ later.
+| | |
+| --- | --- |
+| Status | Design scaffold — contract frozen, implementation next |
+| License | MIT |
+| First pet | Still [Rui on the desktop](https://github.com/RicheyWorks/computerpets/blob/main/docs/START-HERE.md). This organ is optional. |
 
-## Why it exists
+## The job
 
 Treats, coins, and wei cannot drift. Ledger is the book: every quest reward, bazaar fill, and mint fee is a pair of postings.
 
 The flagship overlay already puts a living sticker on the real desktop (Rui first, 210 kinds). Ledger does not replace that. It is one organ.
+
+## Who uses it
+
+Minter, Bazaar, Quests, Ballot. If value moves, it posts here.
+
+## What it is not
+
+Not an exchange. Not a place to delete history.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  quests --> ledger
+  bazaar --> ledger
+  minter --> ledger
+  ballot --> ledger
+```
 
 ## Stack
 
@@ -18,14 +40,6 @@ Java 21 · Spring Boot 3.3 · double-entry tables · Flyway · PostgreSQL · opt
 
 GroupId / namespace: `com.enterprisepet.ledger`  
 Default listen: `8086`
-
-## Talks to
-
-- computerpets-minter
-- computerpets-bazaar
-- computerpets-quests
-- computerpets-console
-- computerpets-ballot
 
 ## Contract
 
@@ -42,6 +56,28 @@ Default listen: `8086`
 ### Failure doctrine
 
 Unbalanced post → reject. Partial chain settlement → hold in escrow account, never delete the row. Replay → unique(ref) constraint.
+
+## First slice
+
+Build this and stop. Do not boil the ocean.
+
+**Double-entry `post` with unique `ref`. Assets: COIN, TREAT, WEI, VOTE.**
+
+You know it works when: Unbalanced post rejected. Replay of same ref is a no-op. Chain settlement sits in escrow until confirms.
+
+## Environment
+
+`DATABASE_URL`
+
+Never commit secrets. Never put Steam or chain keys in the overlay.
+
+## Neighbors
+
+- computerpets-minter
+- computerpets-bazaar
+- computerpets-quests
+- computerpets-console
+- computerpets-ballot
 
 ## Layout
 
@@ -63,13 +99,12 @@ mvn -q -DskipTests package; java -jar target/ledger-1.0.0-SNAPSHOT.jar
 
 You do not need this service to meet Rui. The [flagship start-here](https://github.com/RicheyWorks/computerpets/blob/main/docs/START-HERE.md) is still the first pet.
 
-## Ecosystem
+## Links
 
-| Organ | Repo |
-| --- | --- |
-| Flagship desktop + Spring | [RicheyWorks/computerpets](https://github.com/RicheyWorks/computerpets) |
-| This organ | [RicheyWorks/computerpets-ledger](https://github.com/RicheyWorks/computerpets-ledger) |
-| Full map | [RicheyWorks/computerpets-ecosystem](https://github.com/RicheyWorks/computerpets-ecosystem) |
+- Flagship: [RicheyWorks/computerpets](https://github.com/RicheyWorks/computerpets)
+- This repo: [RicheyWorks/computerpets-ledger](https://github.com/RicheyWorks/computerpets-ledger)
+- Map: [RicheyWorks/computerpets-ecosystem](https://github.com/RicheyWorks/computerpets-ecosystem)
+- Contract file: [docs/CONTRACT.md](docs/CONTRACT.md)
 
 ## License
 
